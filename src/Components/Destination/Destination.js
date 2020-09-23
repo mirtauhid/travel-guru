@@ -1,9 +1,10 @@
 import React from 'react';
+import Header from '../Header/Header';
 
 const Destination = () => {
     return (
         <div>
-            <h3>This is a destination</h3>
+            <Header></Header>
         </div>
     );
 };

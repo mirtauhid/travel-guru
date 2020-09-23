@@ -1,10 +1,14 @@
 import React from 'react';
+import { Container } from 'react-bootstrap';
+import Header from '../Header/Header';
+import Slider from '../Slider/Slider';
 
 const Home = () => {
     return (
-        <div>
-            <h3>This is Home</h3>
-        </div>
+        <Container>
+            <Header></Header>
+            <Slider></Slider>
+        </Container>
     );
 };
 

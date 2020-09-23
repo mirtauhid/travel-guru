@@ -1,9 +1,17 @@
 import React from 'react';
+import { Button } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 
 const Booking = () => {
+    const history = useHistory();
+
+    const proceedSubmit = () => {
+        history.push('/destination');
+    }
+
     return (
         <div>
-            <h3>This is a booking</h3>
+            <Button onClick={proceedSubmit} variant="warning">Submit</Button>
         </div>
     );
 };
