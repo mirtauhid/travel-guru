@@ -24,7 +24,6 @@ const Login = () => {
 
     const [user, setUser] = useState({
         isSignedIn: false,
-        newUser: false,
         name: '',
         email: '',
         password: '',
@@ -32,7 +31,9 @@ const Login = () => {
         success: false,
     });
 
+    
     const [loggedInUser, setLoggedInUser] = useContext(UserContext);
+
     const history = useHistory();
     const location = useLocation();
     let { from } = location.state || { from: { pathname: "/" } };
@@ -45,6 +46,8 @@ const Login = () => {
     }
 
 
+
+    
     // Validator
     const handleBlur = (event) => {
         let isFieldValid = true;
@@ -61,87 +64,112 @@ const Login = () => {
         }
     }
 
-    const handleSubmit = (e) => {
+
+
+
+
+    const handleSubmit = (event) => {
         if (user.email && user.password) {
             firebase.auth().signInWithEmailAndPassword(user.email, user.password)
                 .then(res => {
-                    const newUserInfo = { ...user };
-                    newUserInfo.error = '';
-                    newUserInfo.success = true;
-                    newUserInfo.isSignedIn = true;
-                    setUser(newUserInfo);
-                    setLoggedInUser(newUserInfo);
+                    const { displayName, email } = res.user;
+                    const signedInUser = {
+                        isSignedIn: true,
+                        name: displayName,
+                        email: email,
+                        error: '',
+                        success: true
+                    }
+                    setUser(signedInUser);
+                    setLoggedInUser(signedInUser);
                     history.replace(from);
-                    console.log(res.user);
                 })
                 .catch(error => {
-                    const newUserInfo = { ...user };
-                    newUserInfo.error = error.message;
-                    newUserInfo.success = false;
-                    setUser(newUserInfo);
+                    const signedInUser = {
+                        isSignedIn: false,
+                        name: '',
+                        email: '',
+                        error: error.message,
+                        success: false,
+                    }
+                    setUser(signedInUser);
                 });
 
         }
+        event.preventDefault();
+    }
+
+
+
+
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+    const handleGoogleSignIn = (event) => {
+        firebase.auth().signInWithPopup(googleProvider)
+            .then(res => {
+                // eslint-disable-next-line no-unused-vars
+                const token = res.credential.accessToken;
+                const { displayName, email } = res.user;
+                const signedInUser = {
+                    isSignedIn: true,
+                    name: displayName,
+                    email: email,
+                    error: '',
+                    success: true
+                }
+                setUser(signedInUser);
+                setLoggedInUser(signedInUser);
+                history.replace(from);
+
+            }).catch(error => {
+                const signedInUser = {
+                    isSignedIn: false,
+                    name: '',
+                    email: '',
+                    error: error.message,
+                    success: false,
+                }
+                setUser(signedInUser);
+            })
+        event.preventDefault();
+    }
+
+
+
+    
+    const FbProvider = new firebase.auth.FacebookAuthProvider();
+    const handleFbSignIn = (e) => {
+        firebase.auth().signInWithPopup(FbProvider)
+            .then(res => {
+                const token = res.credential.accessToken;
+                const { displayName, email } = res.user;
+                const signedInUser = {
+                    isSignedIn: true,
+                    name: displayName,
+                    email: email,
+                    error: '',
+                    success: true
+                }
+                setUser(signedInUser);
+                setLoggedInUser(signedInUser);
+                history.replace(from);
+
+            })
+            .catch(error => {
+                const signedInUser = {
+                    isSignedIn: false,
+                    name: '',
+                    email: '',
+                    error: error.message,
+                    success: false,
+                }
+                setUser(signedInUser);
+            })
         e.preventDefault();
     }
 
-    const googleProvider = new firebase.auth.GoogleAuthProvider();
-    const handleGoogleSignIn = () => {
-        firebase.auth().signInWithPopup(googleProvider)
-            .then(res => {
-                console.log(res)
-                const { displayName, email } = res.user;
-                const signedInUser = {
-                    isSignedIn: true,
-                    name: displayName,
-                    email: email,
-                    error: false,
-                    success: true
-                }
-                setUser(signedInUser);
-                console.log(user.name);
-                const token = res.credential.accessToken;
 
-            }).catch(error => {
-                console.log(error);
-                const signedInUser = {
-                    error: true,
-                    success: false
-                }
-                setUser(signedInUser);
-            })
-    }
-
-
-
-    const FbProvider = new firebase.auth.FacebookAuthProvider();
-    const handleFbSignIn = () => {
-        firebase.auth().signInWithPopup(FbProvider)
-            .then(res => {
-                console.log(res)
-                const { displayName, email } = res.user;
-                const signedInUser = {
-                    isSignedIn: true,
-                    name: displayName,
-                    email: email,
-                    error: false,
-                    success: true
-                }
-                setUser(signedInUser);
-                console.log(user.name);
-                const token = res.credential.accessToken;
-
-            }).catch(error => {
-                console.log(error);
-                const signedInUser = {
-                    error: true,
-                    success: false
-                }
-                setUser(signedInUser);
-            })
-    }
-
-
+    
+    
     return (
         <Container style={{ textAlign: 'center' }}>
             <div style={{ border: '1px solid gray', padding: '2px' }}>

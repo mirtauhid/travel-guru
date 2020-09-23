@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Container } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import FbIcon from '../../Images/Icon/fb.png';
 import GoogleIcon from '../../Images/Icon/google.png';
 import * as firebase from "firebase/app";
 import "firebase/auth";
+import { UserContext } from '../../App';
 
 
 
@@ -20,18 +21,30 @@ const SignUp = () => {
     };
 
     const [user, setUser] = useState({
-        newUser: false,
-        firstName: '',
-        lastName: '',
+        isSignedIn: false,
+        name: '',
         email: '',
         password: '',
         error: '',
         success: false,
     });
 
+
+    const [loggedInUser, setLoggedInUser] = useContext(UserContext);
+
+
     if (firebase.apps.length === 0) {
         firebase.initializeApp(firebaseConfig);
     }
+
+
+
+    const history = useHistory();
+    const location = useLocation();
+    let { from } = location.state || { from: { pathname: "/" } };
+
+
+
 
     // Validator
     const handleBlur = (event) => {
@@ -52,25 +65,31 @@ const SignUp = () => {
         }
     }
 
-    const handleSubmit = (e) => {
+
+
+
+    const handleSubmit = (event) => {
         if (user.email && user.password) {
             firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
                 .then(res => {
-                    const newUserInfo = { ...user };
-                    newUserInfo.error = '';
-                    newUserInfo.success = true;
-                    setUser(newUserInfo);
-                    updateUserInfo(user.firstName + ' ' + user.lastName);
+                    const { displayName, email } = res.user;
+                    const signedInUser = {
+                        isSignedIn: true,
+                        name: displayName,
+                        email: email,
+                        error: '',
+                        success: true
+                    }
+                    setUser(signedInUser);
+                    setLoggedInUser(signedInUser);
+                    history.replace(from);
+                    updateUserInfo(document.getElementById('firstName') + ' ' + document.getElementById('lastName'));
                 })
                 .catch(error => {
-                    const newUserInfo = { ...user };
-                    newUserInfo.error = error.message;
-                    newUserInfo.success = false;
-                    setUser(newUserInfo);
-                });
 
+                });
         }
-        e.preventDefault();
+        event.preventDefault();
     }
 
 
@@ -88,59 +107,68 @@ const SignUp = () => {
 
 
     const googleProvider = new firebase.auth.GoogleAuthProvider();
-    const handleGoogleSignIn = () => {
+    const handleGoogleSignIn = (event) => {
         firebase.auth().signInWithPopup(googleProvider)
             .then(res => {
-                console.log(res)
+                // eslint-disable-next-line no-unused-vars
+                const token = res.credential.accessToken;
                 const { displayName, email } = res.user;
                 const signedInUser = {
                     isSignedIn: true,
                     name: displayName,
                     email: email,
-                    error: false,
+                    error: '',
                     success: true
                 }
                 setUser(signedInUser);
-                console.log(user.name);
-                const token = res.credential.accessToken;
+                setLoggedInUser(signedInUser);
+                history.replace(from);
 
             }).catch(error => {
-                console.log(error);
                 const signedInUser = {
-                    error: true,
-                    success: false
+                    isSignedIn: false,
+                    name: '',
+                    email: '',
+                    error: error.message,
+                    success: false,
                 }
                 setUser(signedInUser);
             })
+        event.preventDefault();
     }
 
 
 
+    
     const FbProvider = new firebase.auth.FacebookAuthProvider();
-    const handleFbSignIn = () => {
+    const handleFbSignIn = (e) => {
         firebase.auth().signInWithPopup(FbProvider)
             .then(res => {
-                console.log(res)
+                const token = res.credential.accessToken;
                 const { displayName, email } = res.user;
                 const signedInUser = {
                     isSignedIn: true,
                     name: displayName,
                     email: email,
-                    error: false,
+                    error: '',
                     success: true
                 }
                 setUser(signedInUser);
-                console.log(user.name);
-                const token = res.credential.accessToken;
+                setLoggedInUser(signedInUser);
+                history.replace(from);
 
-            }).catch(error => {
-                console.log(error);
+            })
+            .catch(error => {
                 const signedInUser = {
-                    error: true,
-                    success: false
+                    isSignedIn: false,
+                    name: '',
+                    email: '',
+                    error: error.message,
+                    success: false,
                 }
                 setUser(signedInUser);
             })
+        e.preventDefault();
     }
 
 
@@ -150,9 +178,9 @@ const SignUp = () => {
                 <form onSubmit={handleSubmit}>
                     <h4>Create an account</h4>
                     <br />
-                    <input type="text" onBlur={handleBlur} name="firstName" placeholder="First Name" required />
+                    <input type="text" onBlur={handleBlur} name="firstName" id="firstName" placeholder="First Name" required />
                     <br />
-                    <input type="text" onBlur={handleBlur} name="lastName" placeholder="Last Name" required />
+                    <input type="text" onBlur={handleBlur} name="lastName" id="lastName" placeholder="Last Name" required />
                     <br />
                     <input type="text" onBlur={handleBlur} name="email" placeholder="Username or Email" required />
                     <br />
