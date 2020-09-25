@@ -1,10 +1,10 @@
 import React from 'react';
-import Header from '../Header/Header';
 
 const Blog = () => {
     return (
-        <div>
-            <Header></Header>
+        <div style={{textAlign: 'center', paddingTop: '100px'}}>
+            <h1>This is Travel related blog section</h1>
+            <p>No article available</p>
         </div>
     );
 };

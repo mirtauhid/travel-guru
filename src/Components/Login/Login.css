@@ -1,0 +1,76 @@
+.login-form{
+    margin-top:50px;
+    width: 405px;
+    height: 265px;
+    padding: 40px;
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid #ABABAB;
+    box-sizing: border-box;
+    border-radius: 4px;
+}
+.login-form h4{
+    margin-top: -25px;
+    margin-bottom: -5px;
+}
+.login-form input{
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #D5D5D5;
+    margin: 7px 0px;
+    padding: 2px 7px;
+}
+.login-form .submit-button{
+    margin-top: 15px;
+    padding: 5px;
+    background-color: #F9A51A;
+    border-radius: 4px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+.login-form .submit-button:hover{
+    background-color: #cc8c01e3; 
+}
+.login-form ::placeholder{
+    color: rgb(100, 98, 98);
+    font-size: 15px;
+    font-weight: 350;
+}
+.alert{
+    text-align: center;
+}
+.socialLoginButton{
+    text-align: center;
+}
+.socialLoginButton button{
+    border: 1px solid #DCDCDC;
+    width: 266px;
+    height: 33px;
+    border-radius:25px;
+    margin: 4px;
+    background-color: white;
+    font-weight: 450;
+    
+}
+.socialLoginButton button:hover{
+    background-color: #F7F7F7;
+    border-color: lightgrey;
+}
+.small , small{
+    font-weight: 500;
+}
+.alert a{
+    color:  #ffc107;
+}
+.socialIcon{
+    height: 25px;
+    width: 25px;
+    float: left;
+    margin-left: -3px;
+}
+.divider{
+    width: 265px;
+    background:  #ABABAB;
+}

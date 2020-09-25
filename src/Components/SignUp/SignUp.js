@@ -3,39 +3,26 @@ import { Container } from 'react-bootstrap';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import FbIcon from '../../Images/Icon/fb.png';
 import GoogleIcon from '../../Images/Icon/google.png';
-import * as firebase from "firebase/app";
-import "firebase/auth";
 import { UserContext } from '../../App';
-
+import { handleFbSignIn, handleGoogleSignIn, createUserWithEmailAndPassword, initializer } from '../AuthManager/AuthManager';
+import './SignUp.css';
 
 
 const SignUp = () => {
-    const firebaseConfig = {
-        apiKey: "AIzaSyD_-v4-NQKgYS6tthQSiQM_tEJWyPWL2T0",
-        authDomain: "travel-guru-agency.firebaseapp.com",
-        databaseURL: "https://travel-guru-agency.firebaseio.com",
-        projectId: "travel-guru-agency",
-        storageBucket: "travel-guru-agency.appspot.com",
-        messagingSenderId: "121229455478",
-        appId: "1:121229455478:web:9caec514b89d8d0e4cef57"
-    };
 
     const [user, setUser] = useState({
         isSignedIn: false,
         name: '',
         email: '',
         password: '',
-        error: '',
-        success: false,
     });
 
 
+    // eslint-disable-next-line no-unused-vars
     const [loggedInUser, setLoggedInUser] = useContext(UserContext);
 
 
-    if (firebase.apps.length === 0) {
-        firebase.initializeApp(firebaseConfig);
-    }
+    initializer();
 
 
 
@@ -70,112 +57,59 @@ const SignUp = () => {
 
     const handleSubmit = (event) => {
         if (user.email && user.password) {
-            firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
+            const fullName = document.getElementById('firstName') + ' ' +
+                document.getElementById('lastName');
+            createUserWithEmailAndPassword(fullName, user.email, user.password)
                 .then(res => {
-                    const { displayName, email } = res.user;
-                    const signedInUser = {
-                        isSignedIn: true,
-                        name: displayName,
-                        email: email,
-                        error: '',
-                        success: true
-                    }
-                    setUser(signedInUser);
-                    setLoggedInUser(signedInUser);
-                    history.replace(from);
-                    updateUserInfo(document.getElementById('firstName') + ' ' + document.getElementById('lastName'));
+                    handleResponse(res);
                 })
-                .catch(error => {
-
-                });
+            event.preventDefault();
         }
-        event.preventDefault();
     }
 
 
-    const updateUserInfo = name => {
-        const user = firebase.auth().currentUser;
-        user.updateProfile({
-            displayName: name,
-        }).then(res => {
-            console.log('Profile updated successfully');
-        })
-            .catch(error => {
-                console.log(error);
-            });
-    }
 
-
-    const googleProvider = new firebase.auth.GoogleAuthProvider();
-    const handleGoogleSignIn = (event) => {
-        firebase.auth().signInWithPopup(googleProvider)
+    const googleSignIn = (event) => {
+        handleGoogleSignIn()
             .then(res => {
-                // eslint-disable-next-line no-unused-vars
-                const token = res.credential.accessToken;
-                const { displayName, email } = res.user;
-                const signedInUser = {
-                    isSignedIn: true,
-                    name: displayName,
-                    email: email,
-                    error: '',
-                    success: true
-                }
-                setUser(signedInUser);
-                setLoggedInUser(signedInUser);
-                history.replace(from);
-
-            }).catch(error => {
-                const signedInUser = {
-                    isSignedIn: false,
-                    name: '',
-                    email: '',
-                    error: error.message,
-                    success: false,
-                }
-                setUser(signedInUser);
+                handleResponse(res);
             })
         event.preventDefault();
     }
 
 
 
-    
-    const FbProvider = new firebase.auth.FacebookAuthProvider();
-    const handleFbSignIn = (e) => {
-        firebase.auth().signInWithPopup(FbProvider)
-            .then(res => {
-                const token = res.credential.accessToken;
-                const { displayName, email } = res.user;
-                const signedInUser = {
-                    isSignedIn: true,
-                    name: displayName,
-                    email: email,
-                    error: '',
-                    success: true
-                }
-                setUser(signedInUser);
-                setLoggedInUser(signedInUser);
-                history.replace(from);
 
+
+    const fbSignIn = (event) => {
+        handleFbSignIn()
+            .then(res => {
+                handleResponse(res);
             })
-            .catch(error => {
-                const signedInUser = {
-                    isSignedIn: false,
-                    name: '',
-                    email: '',
-                    error: error.message,
-                    success: false,
-                }
-                setUser(signedInUser);
-            })
-        e.preventDefault();
+        event.preventDefault();
     }
+
+
+
+    const handleResponse = (res) => {
+        if (res.success) {
+            setUser(res);
+            setLoggedInUser(res);
+            history.replace(from);
+        } if (!res.success) {
+            setUser(res);
+            setLoggedInUser(res);
+        }
+    }
+
+
+
 
 
     return (
-        <Container style={{ textAlign: 'center' }}>
-            <div style={{ border: '1px solid gray', padding: '2px' }}>
-                <form onSubmit={handleSubmit}>
+        <Container >
+            <div className="form-container">
+                <form onSubmit={handleSubmit} className="form">
                     <h4>Create an account</h4>
                     <br />
                     <input type="text" onBlur={handleBlur} name="firstName" id="firstName" placeholder="First Name" required />
@@ -188,16 +122,20 @@ const SignUp = () => {
                     <br />
                     <input id="confirmPassword" type="password" onBlur={handleBlur} name="confirmPassword" placeholder="Confirm Password" required />
                     <br />
-                    <input type="submit" value="Create Account" />
+                    <input className="submit-button" type="submit" value="Create an account" />
+                    <br />
+                    <p className="alert"><small>Already have an account? <span><a as={Link} href="/login">Login</a></span> </small></p>
                 </form>
-                <p><small>Already have an account? <span><a as={Link} href="/login">Login</a></span> </small></p>
-                <p style={{ color: 'red' }}>{user.error}</p>
-                {user.success && <p style={{ color: 'green' }}>User created successfully</p>}
+                <div style={{textAlign: 'center'}}>
+                    <p style={{ color: 'red' }}>{user.error}</p>
+                    {user.success && <p style={{ color: 'green' }}>User created successfully</p>}
+                </div>
             </div>
-            <div style={{ marginTop: '26px' }}>
-                <button onClick={handleFbSignIn} ><img style={{ width: '26px', height: '26px' }} src={FbIcon} alt="" /> Continue with Facebook</button>
+            <hr className="divider"/>
+            <div className='socialLoginButton'>
+                <button onClick={fbSignIn} ><img className='socialIcon' src={FbIcon} alt="" /> Continue with Facebook</button>
                 <br />
-                <button onClick={handleGoogleSignIn} ><img style={{ width: '26px', height: '26px' }} src={GoogleIcon} alt="" /> Continue with Google</button>
+                <button onClick={googleSignIn} ><img className='socialIcon' src={GoogleIcon} alt="" /> Continue with Google</button>
             </div>
         </Container>
     );

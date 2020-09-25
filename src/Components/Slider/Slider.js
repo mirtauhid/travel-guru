@@ -1,18 +1,34 @@
 import React from 'react';
-import { Button, Container } from 'react-bootstrap';
-import { Link, } from 'react-router-dom';
+import { Link, useHistory, } from 'react-router-dom';
+import './Slider.css';
 
-const Slider = () => {
-    // const history = useHistory()
-    const handleBooking = (venue) => {
-        // history.push(`/booking/${venue}`);
+
+const Slider = (props) => {
+
+
+    const { title, url } = props.venue;
+    console.log(title);
+
+
+    
+
+
+    const history = useHistory()
+    const handleBook = (title) => {
+        history.push(`/booking/${title}`);
     }
+
+
     return (
-        <Container style={{display: 'flex', paddingTop: '200px' }}>
-            <Button as={Link} to="/booking" onClick={handleBooking('sundarban')} style={{margin: '50px', width: '150px'}} variant="warning">SUNDARBAN</Button>
-            <Button as={Link} to="/booking" onClick={handleBooking('sreemangal')} style={{margin: '50px', width: '150px'}}  variant="warning">SREEMANGAL</Button>
-            <Button as={Link} to="/booking" onClick={handleBooking('sajek')} style={{margin: '50px', width: '150px'}}  variant="warning">SAJEK</Button>
-        </Container>
+        <div className="products fill  justify-content">
+            <div class="cards" >
+                <img class="card-img-top" src={url} alt="Card cap" />
+                <div class="card-body">
+                    <h3 class="card-title">{title}</h3>
+                    <button onClick={() => handleBook(title)} variant="warning"><Link style={{ textDecoration: 'none', color: 'black' }} >Booking</Link></button>
+                </div>
+            </div>
+        </div>
     );
 };
 

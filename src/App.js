@@ -1,9 +1,10 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route, } from "react-router-dom";
 import Blog from './Components/Blog/Blog';
 import Booking from './Components/Booking/Booking';
 import Contact from './Components/Contact/Contact';
 import Destination from './Components/Destination/Destination';
+import Header from './Components/Header/Header';
 import Home from './Components/Home/Home';
 import Login from './Components/Login/Login';
 import News from './Components/News/News';
@@ -15,17 +16,22 @@ export const UserContext = createContext();
 
 const App = () => {
   const [loggedInUser, setLoggedInUser] = useState({});
+  
+
 
 
   return (
     <UserContext.Provider value={[loggedInUser, setLoggedInUser]}>
       <Router>
+        <div>
+          <Header />
+        </div>
         <Switch>
           <Route path="/news">
             <News />
           </Route>
           <PrivateRout path="/destination">
-            <Destination />
+            <Destination></Destination>
           </PrivateRout>
           <Route path="/blog">
             <Blog />
@@ -39,7 +45,7 @@ const App = () => {
           <Route path="/signup">
             <SignUp />
           </Route>
-          <Route path="/booking">
+          <Route path="/booking/:name">
             <Booking />
           </Route>
           <Route exact path="/">

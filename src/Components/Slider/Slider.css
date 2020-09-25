@@ -1,0 +1,44 @@
+.products{
+    display: flex;
+    
+}
+.cards{
+    height: 400px;
+    border: 1px solid lightgray;
+    margin: 50px 90px;
+    border-radius: 10px;
+    width: 250px;
+    overflow: hidden;
+    background-color: #e7e7d0;
+    box-shadow: 5px 5px 10px gray;
+}
+.cards:hover{
+    cursor: pointer;
+}
+.cards img{
+    height: 400px;
+    width: 250px;
+    position: relative;
+}
+.card-body{
+    position: absolute;
+    margin-top: -120px;
+    color: white;
+}
+.card-body button{
+    width: 100px;
+    height: 33px;
+    background-color: #F9A51A;
+    border: #F9A51A;
+    border-radius: 4px;
+    font-weight: 500;
+}
+.card-body button:hover{
+    background-color: #aa6d0a;
+}
+.cards h3:hover{
+    color: #F9A51A;
+}
+.card-title{
+    font-family: 'Bebas Neue', cursive;
+}

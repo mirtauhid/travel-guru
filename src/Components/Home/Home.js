@@ -1,14 +1,31 @@
-import React from 'react';
-import { Container } from 'react-bootstrap';
-import Header from '../Header/Header';
+import React, { useEffect, useState } from 'react';
+import { Row } from 'react-bootstrap';
 import Slider from '../Slider/Slider';
+import './Home.css';
+import bgImg from '../../Images/Image/Rectangle 1.png';
 
 const Home = () => {
+    const [location, setLocation] = useState([]);
+
+    useEffect(() => {
+        fetch('http://www.json-generator.com/api/json/get/cejvNtryYy?indent=2')
+            .then(res => res.json())
+            .then(data => {
+                setLocation(data);
+                console.log(data);
+            })
+    }, [])
+
+
     return (
-        <Container>
-            <Header></Header>
-            <Slider></Slider>
-        </Container>
+        <div className="home-container">
+            
+            <Row>
+                {
+                    location.map(venue => <Slider venue={venue}></Slider>)
+                }
+            </Row>
+        </div>
     );
 };
 

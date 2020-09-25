@@ -1,9 +1,11 @@
 import React from 'react';
+import { Container } from 'react-bootstrap';
+import errorImg from '../../Images/404-Pages.jpg';
 
 const NotFound = () => {
     return (
         <div>
-            <h3>This is not found</h3>
+            <img style={{ height: "502px", width: "100%", marginTop: "10px"}} src={errorImg} alt=""/>
         </div>
     );
 };
