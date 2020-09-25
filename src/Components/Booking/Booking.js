@@ -9,7 +9,7 @@ const Booking = () => {
     const [selectedLocation, setSelectedLocation] = useState({});
 
     useEffect(() => {
-        fetch('http://www.json-generator.com/api/json/get/bVBYKhhueW?indent=2')
+        fetch('https://www.json-generator.com/api/json/get/bVBYKhhueW?indent=2')
             .then(res => res.json())
             .then(data => {
                 const singleLocation = data.map(singleData => singleData);
