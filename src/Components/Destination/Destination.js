@@ -10,7 +10,7 @@ const Destination = (props) => {
 
 
     useEffect(() => {
-        fetch('http://www.json-generator.com/api/json/get/bTGKMgixyW?indent=2')
+        fetch('https://www.json-generator.com/api/json/get/bTGKMgixyW?indent=2')
             .then(res => res.json())
             .then(data => {
                 setSelectedLocation(data);
